@@ -1,4 +1,6 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request, redirect, url_for
+from utils.db import db
+from models.contact import Contact
 
 contacts = Blueprint('contacts', __name__)
 
@@ -6,9 +8,16 @@ contacts = Blueprint('contacts', __name__)
 def index():
     return render_template('index.html')
 
-@contacts.route('/new')
+@contacts.route('/new', methods=['POST'])
 def add_contact():
-    return "Saving a contact"
+    full_name = request.form['full_name']
+    email = request.form['email']
+    phone = request.form['phone']
+    new_contact = Contact(full_name, email, phone)
+
+    db.session.add(new_contact)
+    db.session.commit()
+    return redirect('/')
 
 @contacts.route('/update')
 def update_contact():
