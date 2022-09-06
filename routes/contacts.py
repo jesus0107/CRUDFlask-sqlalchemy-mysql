@@ -1,5 +1,4 @@
-from crypt import methods
-from flask import Blueprint, render_template, request, redirect,url_for
+from flask import Blueprint, render_template, request, redirect,url_for, flash
 from utils.db import db
 from models.contact import Contact
 
@@ -19,6 +18,7 @@ def add_contact():
 
     db.session.add(new_contact)
     db.session.commit()
+    flash("Contacto agregado satisfactoriamente")
     return redirect(url_for('contacts.index'))
 
 @contacts.route('/update/<id>', methods=['POST', 'GET'])
@@ -29,6 +29,7 @@ def update_contact(id):
         contact.email = request.form['email']
         contact.phone = request.form['phone']
         db.session.commit()
+        flash('Contacto actualizado satisfactoriamente')
         return redirect(url_for('contacts.index'))
     
     return render_template('update.html', contact=contact)
@@ -38,6 +39,7 @@ def delete_contact(id):
     contact = Contact.query.get(id)
     db.session.delete(contact)
     db.session.commit()
+    flash('Contacto eliminado satisfactoriamente')
     return redirect(url_for('contacts.index'))
 
 @contacts.route('/about')
